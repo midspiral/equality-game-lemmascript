@@ -58,9 +58,12 @@ function multisetEqual(a: number[], b: number[]): boolean {
   return true;
 }
 
+type Snapshot = { left: SideState; right: SideState };
+
 export function App() {
   const [left, setLeft] = useState<SideState>({ items: [card(dealDigit())] });
   const [right, setRight] = useState<SideState>({ items: [card(dealDigit())] });
+  const [history, setHistory] = useState<Snapshot[]>([]);
   const [sel, setSel] = useState<Selection | null>(null);
   const [status, setStatus] = useState<Status>({ kind: "playing" });
   const [round, setRound] = useState(1);
@@ -71,6 +74,7 @@ export function App() {
   const reset = () => {
     setLeft({ items: [card(dealDigit())] });
     setRight({ items: [card(dealDigit())] });
+    setHistory([]);
     setSel(null);
     setStatus({ kind: "playing" });
     setRound(1);
@@ -79,9 +83,20 @@ export function App() {
   const dealMore = () => {
     setLeft((s) => ({ items: [...s.items, card(dealDigit())] }));
     setRight((s) => ({ items: [...s.items, card(dealDigit())] }));
+    setHistory([]);
     setSel(null);
     setStatus({ kind: "playing" });
     setRound((r) => r + 1);
+  };
+
+  const undo = () => {
+    if (history.length === 0) return;
+    const prev = history[history.length - 1];
+    setLeft(prev.left);
+    setRight(prev.right);
+    setHistory((h) => h.slice(0, -1));
+    setSel(null);
+    setStatus({ kind: "playing" });
   };
 
   const onItemClick = (side: SideId, id: string) => {
@@ -117,6 +132,7 @@ export function App() {
       return;
     }
     const newItem: Item = { id: nextId(), expr: merged };
+    setHistory((h) => [...h, { left, right }]);
     setSide(side)({
       items: state.items
         .filter((it) => it.id !== a.id && it.id !== b.id)
@@ -215,6 +231,13 @@ export function App() {
             tone="warn"
           >
             Claim impossible
+          </Button>
+          <Button
+            onClick={undo}
+            disabled={history.length === 0 || status.kind !== "playing"}
+            tone="ghost"
+          >
+            Undo
           </Button>
           <Button onClick={reset} tone="ghost">
             Reset
