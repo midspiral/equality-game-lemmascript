@@ -1,0 +1,28 @@
+*~
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# TypeScript / Vite
+*.tsbuildinfo
+.vite/
+
+# Dafny
+*.dfy.merged
+*.dfy.base
+*.doo
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*

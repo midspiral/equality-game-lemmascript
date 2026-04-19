@@ -1,0 +1,16 @@
+{
+  "name": "equality-game-lemmascript",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "lsc gen --backend=dafny src/equality.ts",
+    "check": "lsc check --backend=dafny src/equality.ts",
+    "regen": "lsc regen --backend=dafny src/equality.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "lemmascript": "^0.3.2",
+    "typescript": "^5.7.0"
+  }
+}
