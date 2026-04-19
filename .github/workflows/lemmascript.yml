@@ -12,6 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Setup Dafny
+        uses: dafny-lang/setup-dafny-action@v1
+        with:
+          dafny-version: '4.11.0'
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -22,16 +32,6 @@ jobs:
 
       - name: Install LemmaScript tools
         run: cd ../LemmaScript/tools && npm ci
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Setup Dafny
-        uses: dafny-lang/setup-dafny-action@v1
-        with:
-          dafny-version: '4.11.0'
 
       - name: Install root dependencies
         run: npm install
