@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Clone LemmaScript
         run: git clone https://github.com/midspiral/LemmaScript.git ../LemmaScript
@@ -40,7 +40,7 @@ jobs:
         run: npm run typecheck
 
       - name: Install UI dependencies
-        run: cd ui && npm install
+        run: cd ui && npm ci
 
       - name: Typecheck UI
         run: cd ui && npx tsc --noEmit
