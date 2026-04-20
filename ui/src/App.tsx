@@ -72,13 +72,17 @@ export function App() {
   const setSide = (s: SideId) => (s === "L" ? setLeft : setRight);
   const sideState = (s: SideId) => (s === "L" ? left : right);
 
-  const reset = () => {
+  const playAgain = () => {
     setLeft({ items: [card(dealDigit())] });
     setRight({ items: [card(dealDigit())] });
     setHistory([]);
     setSel(null);
     setStatus({ kind: "playing" });
     setRound(1);
+  };
+
+  const reset = () => {
+    playAgain();
     setWins(0);
   };
 
@@ -253,7 +257,7 @@ export function App() {
         {status.kind !== "playing" && (
           <Banner
             status={status}
-            onPlayAgain={reset}
+            onPlayAgain={playAgain}
             onResume={() => setStatus({ kind: "playing" })}
           />
         )}
