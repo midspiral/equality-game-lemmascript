@@ -67,6 +67,7 @@ export function App() {
   const [sel, setSel] = useState<Selection | null>(null);
   const [status, setStatus] = useState<Status>({ kind: "playing" });
   const [round, setRound] = useState(1);
+  const [wins, setWins] = useState(0);
 
   const setSide = (s: SideId) => (s === "L" ? setLeft : setRight);
   const sideState = (s: SideId) => (s === "L" ? left : right);
@@ -78,6 +79,7 @@ export function App() {
     setSel(null);
     setStatus({ kind: "playing" });
     setRound(1);
+    setWins(0);
   };
 
   const dealMore = () => {
@@ -156,6 +158,7 @@ export function App() {
       return;
     }
     if (lv === rv) {
+      setWins((w) => w + 1);
       setStatus({
         kind: "won",
         reason: `Both sides evaluate to ${lv}. ✓`,
@@ -177,6 +180,7 @@ export function App() {
         reason: "Equality IS possible — system found a match.",
       });
     } else {
+      setWins((w) => w + 1);
       setStatus({
         kind: "continuing",
         reason: "Correct — no equality possible. Dealing more cards…",
@@ -189,7 +193,9 @@ export function App() {
     <div className="min-h-screen bg-slate-50 text-slate-900 p-6 font-sans">
       <header className="max-w-4xl mx-auto mb-6 flex items-baseline justify-between">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">Equality</h1>
-        <div className="text-sm text-slate-500">Round {round}</div>
+        <div className="text-sm text-slate-500">
+          Round {round} · Wins {wins}
+        </div>
       </header>
 
       <main className="max-w-4xl mx-auto space-y-6">
