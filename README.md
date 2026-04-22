@@ -9,6 +9,8 @@ TypeScript module is annotated with `//@` specs and translated to Dafny, where
 the soundness/completeness theorems are mechanically proved. The same module
 runs in the React UI.
 
+Play the game here: [https://midspiral.github.io/equality-game-lemmascript/](https://midspiral.github.io/equality-game-lemmascript/).
+
 ## Game
 
 Each side accumulates a sequence of digits (1–9). On each turn the player can:
