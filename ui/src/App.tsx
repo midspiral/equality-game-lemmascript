@@ -29,6 +29,33 @@ const nextId = () => `i${++_id}`;
 const dealDigit = () => 1 + Math.floor(Math.random() * 9);
 const card = (v: number): Item => ({ id: nextId(), expr: { kind: "num", v } });
 
+function rawDigits(items: Item[]): number[] {
+  const acc: number[] = [];
+  for (const it of items) acc.push(...leaves(it.expr));
+  return acc;
+}
+
+function parseBoardHash(): { left: number[]; right: number[] } | null {
+  const h = window.location.hash.slice(1);
+  if (!h) return null;
+  const [lStr, rStr] = h.split("|");
+  if (!lStr || !rStr) return null;
+  const parse = (s: string) =>
+    s.split(",").map(Number).filter((n) => n >= 1 && n <= 9 && Number.isInteger(n));
+  const left = parse(lStr);
+  const right = parse(rStr);
+  if (left.length === 0 || right.length === 0) return null;
+  if (left.length !== lStr.split(",").length || right.length !== rStr.split(",").length)
+    return null;
+  return { left, right };
+}
+
+function makeBoardHash(leftItems: Item[], rightItems: Item[]): string {
+  const L = rawDigits(leftItems).join(",");
+  const R = rawDigits(rightItems).join(",");
+  return `${L}|${R}`;
+}
+
 function exprText(e: Expr): string {
   if (e.kind === "num") return String(e.v);
   const s = OPS.find((o) => o.op === e.op)!.sym;
@@ -38,12 +65,6 @@ function exprText(e: Expr): string {
 function exprValue(e: Expr): number | null {
   const r = evalExpr(e);
   return r.kind === "ok" ? r.v : null;
-}
-
-function rawDigits(items: Item[]): number[] {
-  const acc: number[] = [];
-  for (const it of items) acc.push(...leaves(it.expr));
-  return acc;
 }
 
 function multisetEqual(a: number[], b: number[]): boolean {
@@ -60,14 +81,21 @@ function multisetEqual(a: number[], b: number[]): boolean {
 
 type Snapshot = { left: SideState; right: SideState };
 
+function initSide(digits?: number[]): SideState {
+  return { items: (digits ?? [dealDigit()]).map((d) => card(d)) };
+}
+
+const initBoard = parseBoardHash();
+
 export function App() {
-  const [left, setLeft] = useState<SideState>({ items: [card(dealDigit())] });
-  const [right, setRight] = useState<SideState>({ items: [card(dealDigit())] });
+  const [left, setLeft] = useState<SideState>(initSide(initBoard?.left));
+  const [right, setRight] = useState<SideState>(initSide(initBoard?.right));
   const [history, setHistory] = useState<Snapshot[]>([]);
   const [sel, setSel] = useState<Selection | null>(null);
   const [status, setStatus] = useState<Status>({ kind: "playing" });
   const [round, setRound] = useState(1);
   const [wins, setWins] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   const setSide = (s: SideId) => (s === "L" ? setLeft : setRight);
   const sideState = (s: SideId) => (s === "L" ? left : right);
@@ -79,11 +107,16 @@ export function App() {
     setSel(null);
     setStatus({ kind: "playing" });
     setRound(1);
+    window.history.replaceState(null, "", window.location.pathname);
   };
 
-  const reset = () => {
-    playAgain();
-    setWins(0);
+  const share = () => {
+    const hash = makeBoardHash(left.items, right.items);
+    window.location.hash = hash;
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
   };
 
   const dealMore = () => {
@@ -249,8 +282,8 @@ export function App() {
           >
             Undo
           </Button>
-          <Button onClick={reset} tone="ghost">
-            Reset
+          <Button onClick={share} tone="ghost">
+            {copied ? "Copied!" : "Share"}
           </Button>
         </div>
 
