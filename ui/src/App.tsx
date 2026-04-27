@@ -36,7 +36,7 @@ function rawDigits(items: Item[]): number[] {
 }
 
 function parseBoardHash(): { left: number[]; right: number[] } | null {
-  const h = window.location.hash.slice(1);
+  const h = decodeURIComponent(window.location.hash.slice(1));
   if (!h) return null;
   const [lStr, rStr] = h.split("|");
   if (!lStr || !rStr) return null;
