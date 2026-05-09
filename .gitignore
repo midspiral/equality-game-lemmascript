@@ -23,6 +23,11 @@ build/
 *.swp
 *.swo
 
+# Capacitor / iOS
+ui/ios/App/App/public/
+ui/ios/App/CapApp-SPM/.build/
+*.xcuserdatad
+
 # Logs
 *.log
 npm-debug.log*
