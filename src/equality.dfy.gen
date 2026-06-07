@@ -97,6 +97,7 @@ function leaves(e: Expr): seq<int>
 
 method reachable(cards: seq<int>) returns (res: set<int>)
   requires (|cards| >= 1)
+  decreases |cards|
 {
   var out: set<int> := {};
   if (|cards| == 1) {
