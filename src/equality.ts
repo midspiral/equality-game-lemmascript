@@ -79,6 +79,8 @@ export function reachable(cards: number[]): Set<number> {
 export function canEqualize(L: number[], R: number[]): boolean {
   //@ requires L.length >= 1
   //@ requires R.length >= 1
+  //@ ensures \result ==> ExpressionsAgree(L, R)
+  //@ ensures ExpressionsAgree(L, R) ==> \result
 
   const sL = reachable(L);
   const sR = reachable(R);
