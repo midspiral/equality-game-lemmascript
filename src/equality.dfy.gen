@@ -38,6 +38,13 @@ function JSFloorDiv(a: int, b: int): int
     else -((a - 1) / (-b)) - 1
 }
 
+function JSRem(a: int, b: int): int
+  requires b != 0
+{
+  var r := (if a < 0 then -a else a) % (if b < 0 then -b else b);
+  if a < 0 then -r else r
+}
+
 datatype Op = Add | Sub | Mul | Div
 
 datatype Expr = num(v: int) | app(op: Op, l: Expr, r: Expr)
@@ -76,7 +83,7 @@ function evalExpr(e: Expr): EvalResult
                     if (b == 0) then
                       EvalResult.err
                     else
-                      if ((a % b) != 0) then
+                      if (JSRem(a, b) != 0) then
                         EvalResult.err
                       else
                         ok(JSFloorDiv(a, b))
@@ -146,7 +153,7 @@ method reachable(cards: seq<int>) returns (res: set<int>)
         out := (out + {(a + b)});
         out := (out + {(a - b)});
         out := (out + {(a * b)});
-        if ((b != 0) && ((a % b) == 0)) {
+        if ((b != 0) && (JSRem(a, b) == 0)) {
           out := (out + {JSFloorDiv(a, b)});
         }
         i_b_idx := i_b_idx + 1;

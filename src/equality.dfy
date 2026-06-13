@@ -186,6 +186,13 @@ function JSFloorDiv(a: int, b: int): int
     else -((a - 1) / (-b)) - 1
 }
 
+function JSRem(a: int, b: int): int
+  requires b != 0
+{
+  var r := (if a < 0 then -a else a) % (if b < 0 then -b else b);
+  if a < 0 then -r else r
+}
+
 datatype Op = Add | Sub | Mul | Div
 
 datatype Expr = num(v: int) | app(op: Op, l: Expr, r: Expr)
@@ -224,7 +231,7 @@ function evalExpr(e: Expr): EvalResult
                     if (b == 0) then
                       EvalResult.err
                     else
-                      if ((a % b) != 0) then
+                      if (JSRem(a, b) != 0) then
                         EvalResult.err
                       else
                         ok(JSFloorDiv(a, b))
@@ -457,7 +464,7 @@ lemma ChooseMaskNotAllOnes(cards: seq<int>, M1: multiset<int>)
 }
 
 function applyOp(op: Op, a: int, b: int): int
-  requires op == Div ==> b != 0 && a % b == 0
+  requires op == Div ==> b != 0 && JSRem(a, b) == 0
 {
   match op
   case Add => a + b
@@ -468,7 +475,7 @@ function applyOp(op: Op, a: int, b: int): int
 
 predicate opValid(op: Op, a: int, b: int)
 {
-  op != Div || (b != 0 && a % b == 0)
+  op != Div || (b != 0 && JSRem(a, b) == 0)
 }
 
 // All op(eL, eR) combinations for the multiset partition induced by mask m are in out.
@@ -543,7 +550,7 @@ lemma WitnessCombine(L: seq<int>, R: seq<int>, cards: seq<int>, a: int, b: int)
   ensures ReachableExists(cards, a + b)
   ensures ReachableExists(cards, a - b)
   ensures ReachableExists(cards, a * b)
-  ensures (b != 0 && a % b == 0) ==> ReachableExists(cards, JSFloorDiv(a, b))
+  ensures (b != 0 && JSRem(a, b) == 0) ==> ReachableExists(cards, JSFloorDiv(a, b))
 {
   var eL :| evalExpr(eL) == ok(a) && multiset(leaves(eL)) == multiset(L);
   var eR :| evalExpr(eR) == ok(b) && multiset(leaves(eR)) == multiset(R);
@@ -557,7 +564,7 @@ lemma WitnessCombine(L: seq<int>, R: seq<int>, cards: seq<int>, a: int, b: int)
   var eMul := app(Mul, eL, eR);
   assert evalExpr(eMul) == ok(a * b);
   assert multiset(leaves(eMul)) == multiset(cards);
-  if b != 0 && a % b == 0 {
+  if b != 0 && JSRem(a, b) == 0 {
     var eDiv := app(Div, eL, eR);
     assert evalExpr(eDiv) == ok(JSFloorDiv(a, b));
     assert multiset(leaves(eDiv)) == multiset(cards);
@@ -687,7 +694,7 @@ method reachable(cards: seq<int>) returns (res: set<int>)
         out := (out + {(a + b)});
         out := (out + {(a - b)});
         out := (out + {(a * b)});
-        if ((b != 0) && ((a % b) == 0)) {
+        if ((b != 0) && (JSRem(a, b) == 0)) {
           out := (out + {JSFloorDiv(a, b)});
         }
         AllPrioMasksMono(cards, mask, outBefore, out);
@@ -787,7 +794,7 @@ lemma CompletenessFromMaskCoverage(cards: seq<int>, out: set<int>)
           case Sub => assert applyOp(Sub, evalExpr(eL).v, evalExpr(eR).v) == evalExpr(e).v;
           case Mul => assert applyOp(Mul, evalExpr(eL).v, evalExpr(eR).v) == evalExpr(e).v;
           case Div =>
-            assert evalExpr(eR).v != 0 && evalExpr(eL).v % evalExpr(eR).v == 0;
+            assert evalExpr(eR).v != 0 && JSRem(evalExpr(eL).v, evalExpr(eR).v) == 0;
             assert applyOp(Div, evalExpr(eL).v, evalExpr(eR).v) == evalExpr(e).v;
         }
         assert opValid(op, evalExpr(eL).v, evalExpr(eR).v);
