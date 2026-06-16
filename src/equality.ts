@@ -77,6 +77,7 @@ export function reachable(cards: number[]): Set<number> {
 }
 
 export function canEqualize(L: number[], R: number[]): boolean {
+  //@ contract A sound and complete decision procedure for whether the two card lists can be equalized — returns true exactly when expressions over L and R can agree.
   //@ requires L.length >= 1
   //@ requires R.length >= 1
   //@ ensures \result ==> ExpressionsAgree(L, R)

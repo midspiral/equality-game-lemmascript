@@ -1,0 +1,32 @@
+{
+  "file": "src/equality.ts",
+  "generated": "2026-06-16",
+  "assumesVerified": true,
+  "summary": {
+    "contracts": 1,
+    "confirmed": 1,
+    "disputed": 0,
+    "gaps": 0
+  },
+  "guarantees": [
+    {
+      "specId": "canEqualize",
+      "function": "canEqualize",
+      "requirement": "A sound and complete decision procedure for whether the two card lists can be equalized — returns true exactly when expressions over L and R can agree.",
+      "spec": {
+        "signature": "canEqualize(L: number[], R: number[]): boolean",
+        "requires": [
+          "L.length >= 1",
+          "R.length >= 1"
+        ],
+        "ensures": [
+          "\\result ==> ExpressionsAgree(L, R)",
+          "ExpressionsAgree(L, R) ==> \\result"
+        ]
+      },
+      "status": "confirmed",
+      "backTranslation": "The function canEqualize returns true if and only if the two arrays L and R express the same thing (ExpressionsAgree(L, R) holds)."
+    }
+  ],
+  "gaps": []
+}
