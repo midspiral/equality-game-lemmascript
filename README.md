@@ -1,6 +1,6 @@
 # Equality
 
-[![LemmaScript: verified](https://img.shields.io/badge/LemmaScript-verified-brightgreen)](https://github.com/midspiral/equality-game-lemmascript/actions/workflows/lemmascript.yml)
+[![LemmaScript verified](https://img.shields.io/github/actions/workflow/status/midspiral/equality-game-lemmascript/lemmascript.yml?branch=main&label=LemmaScript%20verified)](https://github.com/midspiral/equality-game-lemmascript/actions/workflows/lemmascript.yml)
 
 
 A small two-player card game where the verified core decides — with full
