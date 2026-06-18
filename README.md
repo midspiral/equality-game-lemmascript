@@ -1,5 +1,8 @@
 # Equality
 
+[![LemmaScript: verified](https://img.shields.io/badge/LemmaScript-verified-brightgreen)](https://github.com/midspiral/equality-game-lemmascript/actions/workflows/lemmascript.yml)
+
+
 A small two-player card game where the verified core decides — with full
 soundness and completeness — whether the dealt digits can be combined into
 equal expressions on each side.
