@@ -80,8 +80,7 @@ export function canEqualize(L: number[], R: number[]): boolean {
   //@ contract A sound and complete decision procedure for whether the two card lists can be equalized — returns true exactly when expressions over L and R can agree.
   //@ requires L.length >= 1
   //@ requires R.length >= 1
-  //@ ensures \result ==> ExpressionsAgree(L, R)
-  //@ ensures ExpressionsAgree(L, R) ==> \result
+  //@ ensures \result <==> ExpressionsAgree(L, R)
 
   const sL = reachable(L);
   const sR = reachable(R);

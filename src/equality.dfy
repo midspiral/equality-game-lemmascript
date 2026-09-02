@@ -816,8 +816,7 @@ ghost predicate ExpressionsAgree(L: seq<int>, R: seq<int>)
 method canEqualize(L: seq<int>, R: seq<int>) returns (res: bool)
   requires (|L| >= 1)
   requires (|R| >= 1)
-  ensures (res ==> ExpressionsAgree(L, R))
-  ensures (ExpressionsAgree(L, R) ==> res)
+  ensures (res <==> ExpressionsAgree(L, R))
 {
   var i_t2 := reachable(L);
   var sL := i_t2;
